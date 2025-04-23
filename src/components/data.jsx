@@ -286,7 +286,7 @@ export const projects = [
     name:"portfolio-2",
     description:Portfolio2Desc(),
     image:"/projects/Portfolio-2.png",
-    gitLink:"https://github.com/vedpatil1345/portfolio/tree/v2.0",
+    gitLink:"https://github.com/vedpatil1345/3Js-Portfolio",
     demoLink:"https://ved-patil.vercel.app/",
     techStack:['React', 'Tailwind CSS', 'Three.js', 'shadcn/ui', 'React Three Fiber'],
   },
