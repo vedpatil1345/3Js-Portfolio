@@ -134,7 +134,7 @@ const NavBar = memo(() => {
   };
 
   return (
-    <header className="py-1 fixed top-2 left-[2.5vw] w-[95vw] rounded-2xl mx-auto z-50 bg-white dark:bg-slate-900 shadow-xl ring-2 dark:ring-blue-500/50 shadow-black/50 dark:shadow-blue-500/50">
+    <header className="py-1 fixed top-2 left-[2.5vw] w-[95vw] rounded-2xl mx-auto z-50 bg-white dark:bg-slate-900 shadow-xl dark:ring-2 dark:ring-blue-500/50 shadow-black/50 dark:shadow-blue-500/50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-12">
           <NavLink to="/" className="flex items-center " onClick={(e) => handleNavClick(e, 'home')}>

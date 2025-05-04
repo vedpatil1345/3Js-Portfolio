@@ -90,7 +90,7 @@ const ProjectCard = React.memo(({
             </a>
 
             <a
-              href={project.liveLink || "#"}
+              href={project.demoLink || "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 hover:bg-blue-700 transition-colors duration-300 text-white"
