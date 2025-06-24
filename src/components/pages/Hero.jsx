@@ -3,10 +3,10 @@ import {
   Environment,
   Stars,
   Float,
-  useGLTF,
+  useDetectGPU,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React, { Suspense, useRef, useMemo, memo, useCallback } from "react";
+import React, { Suspense, useRef, useMemo, memo, useCallback, useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { MyRoom } from "../elements/MyRoom";
 import CanvasLoader from "../elements/Loader";
@@ -20,11 +20,6 @@ import { ReactModel } from "../elements/ReactModel";
 import { HeroEarth } from "../elements/HeroEarth";
 import Drone from "../elements/Drone";
 import { calculateSizes } from "../data";
-
-// Preload models to avoid jank during rendering
-useGLTF.preload("../models/room.glb"); // Add paths to your actual models
-useGLTF.preload("../models/car.glb");
-useGLTF.preload("../models/react.glb");
 
 // Memoize scene elements to prevent unnecessary re-renders
 const MemoizedRoom = memo(MyRoom);
@@ -40,25 +35,44 @@ const StarsComponent = memo(() => (
 ));
 
 // Effects component to avoid duplicate EffectComposers
-const SceneEffects = memo(({ lightRefs, objectRefs, droneRef }) => {
+// Fixed to handle refs properly with null checks and using current property
+const SceneEffects = ({ lightRefs, objectRefs, droneRef }) => {
+  // Only render effects when all refs are available
+  const shouldRender = useMemo(() => {
+    const lights = lightRefs.filter(ref => ref.current).map(ref => ref.current);
+    const objects = objectRefs.current ? [objectRefs.current] : [];
+    const drone = droneRef.current ? [droneRef.current] : [];
+    
+    return lights.length > 0 && (objects.length > 0 || drone.length > 0);
+  }, [lightRefs, objectRefs, droneRef]);
+
+  if (!shouldRender) return null;
+
   return (
     <EffectComposer multisampling={0} frameBufferType={THREE.HalfFloatType}>
-      <SelectiveBloom
-        lights={lightRefs}
-        selection={objectRefs}
-        luminanceThreshold={0.2}
-        luminanceSmoothing={0.9}
-        intensity={1.1}
-      />
-      <SelectiveBloom
-        lights={lightRefs}
-        selection={[droneRef]}
-        luminanceThreshold={2}
-        mipmapBlur
-      />
+      {/* Only apply bloom effect if object refs are available */}
+      {objectRefs.current && (
+        <SelectiveBloom
+          lights={lightRefs.filter(ref => ref.current).map(ref => ref.current)}
+          selection={objectRefs.current ? [objectRefs.current] : []}
+          luminanceThreshold={0.2}
+          luminanceSmoothing={0.9}
+          intensity={1.1}
+        />
+      )}
+      
+      {/* Only apply drone bloom effect if drone ref is available */}
+      {droneRef.current && (
+        <SelectiveBloom
+          lights={lightRefs.filter(ref => ref.current).map(ref => ref.current)}
+          selection={droneRef.current ? [droneRef.current] : []}
+          luminanceThreshold={2}
+          mipmapBlur
+        />
+      )}
     </EffectComposer>
   );
-});
+};
 
 // Optimize the button component with memo
 const Button = memo(({ name, isBeam = false, containerClass }) => {
@@ -72,7 +86,7 @@ const Button = memo(({ name, isBeam = false, containerClass }) => {
   return (
     <button
       onClick={scrollToAbout}
-      className={`flex gap-4 items-center justify-center cursor-pointer p-3 rounded-md bg-white dark:bg-slate-600 transition-all active:scale-95 text-black dark:text-white mx-auto ${containerClass}`}
+      className={`flex gap-4 items-center justify-center cursor-pointer p-3 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-all active:scale-95 text-black dark:text-white mx-auto ${containerClass}`}
     >
       {isBeam && (
         <span className="relative flex h-3 w-3">
@@ -89,6 +103,42 @@ function Hero() {
   const { theme } = useTheme();
   const ismobile = useMediaQuery({ query: "(max-width: 640px)" });
   const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
+  const [isVisible, setIsVisible] = useState(true);
+  const sectionRef = useRef(null);
+  const GPUTier = useDetectGPU();
+
+  // Use Intersection Observer to detect when section is visible
+  useEffect(() => {
+    // Only setup the observer if the browser supports it
+    if (!('IntersectionObserver' in window)) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Should be only one entry since we're observing a single element
+        if (entries[0]) {
+          setIsVisible(entries[0].isIntersecting);
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: "0px",
+        threshold: 0.1, // trigger when at least 10% is visible
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+      observer.disconnect();
+    };
+  }, []);
 
   // Use useMemo to prevent recalculation on every render
   const sizes = useMemo(
@@ -96,10 +146,33 @@ function Hero() {
     [ismobile, isTablet]
   );
 
+  // Create refs for objects and lights
+  const roomRef = useRef();
+  const carRef = useRef();
+  const reactModelRef = useRef();
+  const earthRef = useRef();
   const droneRef = useRef();
-  const ref = useRef();
   const lightRef1 = useRef();
   const lightRef2 = useRef();
+
+  // Ensure all object refs are collected in one place for SceneEffects
+  const objectRefs = useMemo(() => {
+    return [roomRef, carRef, reactModelRef, earthRef].filter(ref => ref.current);
+  }, []);
+
+  // Adjust quality settings based on device capabilities
+  const qualitySettings = useMemo(() => {
+    const isMobileLowPower = ismobile && (!GPUTier || GPUTier.tier < 2);
+    
+    return {
+      shadows: !isMobileLowPower,
+      dpr: [1, isMobileLowPower ? 1 : ismobile ? 1.5 : 2],
+      shadowMapSize: isMobileLowPower ? 256 : ismobile ? 512 : 1024,
+      environmentPreset: theme === "light" ? "warehouse" : "sunset",
+      ambientIntensity: isMobileLowPower ? 0.6 : ismobile ? 0.8 : 1,
+      directionalIntensity: isMobileLowPower ? 0.3 : ismobile ? 0.4 : 0.5,
+    };
+  }, [ismobile, GPUTier, theme]);
 
   // Memoize background color to prevent recreating the color object
   const backgroundColor = useMemo(
@@ -107,8 +180,30 @@ function Hero() {
     [theme]
   );
 
+  // Track whether 3D components have loaded
+  const [componentsLoaded, setComponentsLoaded] = useState({
+    room: false,
+    car: false,
+    reactModel: false,
+    earth: false,
+    drone: false
+  });
+
+  // Only render effects when core components are loaded
+  const shouldRenderEffects = useMemo(() => {
+    return isVisible && componentsLoaded.room;
+  }, [isVisible, componentsLoaded]);
+
+  // Handle component load events
+  const handleComponentLoad = useCallback((componentName) => {
+    setComponentsLoaded(prev => ({
+      ...prev,
+      [componentName]: true
+    }));
+  }, []);
+
   return (
-    <section className="h-screen max-w-screen flex flex-col relative">
+    <section className="h-screen max-w-screen flex flex-col relative" ref={sectionRef}>
       <div className="mx-auto flex flex-col mt-36 z-10 relative w-full h-full">
         <p className="text-2xl md:text-3xl lg:text-5xl text-center">
           Hi, I am Ved <span className="waving-hand">👋</span>
@@ -117,102 +212,98 @@ function Hero() {
       </div>
       <div className="absolute top-0 left-0 w-full h-full">
         <Canvas
-          shadows={!ismobile}
+          shadows={qualitySettings.shadows}
           className="h-full w-full z-0"
-          dpr={[1, ismobile ? 1.5 : 2]}
+          dpr={qualitySettings.dpr}
           performance={{ min: 0.5 }}
-          // Add these to ensure pointer events work
-          eventSource={document.getElementById("root")} // Or another parent element
+          frameloop={isVisible ? "always" : "demand"}
+          eventSource={document.getElementById("root")}
           eventPrefix="client"
         >
           <Suspense fallback={<CanvasLoader />}>
-            {/* Reduced quality preset for mobile */}
-            <Environment preset={theme === "light" ? "warehouse" : "sunset"} />
+            <Environment preset={qualitySettings.environmentPreset} />
             <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={45} />
 
-            {/* Reduced light intensity for better performance */}
-            <ambientLight intensity={ismobile ? 0.8 : 1} ref={lightRef1} />
+            <ambientLight intensity={qualitySettings.ambientIntensity} ref={lightRef1} />
             <directionalLight
               position={[10, 10, 10]}
-              intensity={ismobile ? 0.4 : 0.5}
-              castShadow={!ismobile}
-              shadow-mapSize-width={ismobile ? 512 : 1024}
-              shadow-mapSize-height={ismobile ? 512 : 1024}
+              intensity={qualitySettings.directionalIntensity}
+              castShadow={qualitySettings.shadows}
+              shadow-mapSize-width={qualitySettings.shadowMapSize}
+              shadow-mapSize-height={qualitySettings.shadowMapSize}
               ref={lightRef2}
             />
 
             <HeroCamera isMobile={ismobile}>
               <MemoizedRoom
-                ref={ref}
+                ref={roomRef}
                 position={sizes.deskPosition}
                 rotation={sizes.deskRotation}
                 scale={sizes.deskScale}
-                castShadow={!ismobile}
-                receiveShadow={!ismobile}
+                castShadow={qualitySettings.shadows}
+                receiveShadow={qualitySettings.shadows}
+                onAfterRender={() => handleComponentLoad('room')}
               />
             </HeroCamera>
 
             <color attach="background" args={[backgroundColor]} />
 
             {theme === "light" ? <MemoizedSky /> : <StarsComponent />}
+            
+            {/* Only render these components when visible for better performance */}
+            {isVisible && (
+              <>
+                <Suspense fallback={null}>
+                  <group position={sizes.carPosition}>
+                    <MemoizedCar
+                      ref={carRef}
+                      rotation={sizes.carRotation}
+                      scale={sizes.carScale}
+                      castShadow={qualitySettings.shadows}
+                      receiveShadow={qualitySettings.shadows}
+                      onAfterRender={() => handleComponentLoad('car')}
+                    />
+                  </group>
+                </Suspense>
 
-            <group position={sizes.carPosition}>
-              {ismobile ? (
-                <Float speed={1} rotationIntensity={0.7} floatIntensity={0.7}>
-                  <MemoizedCar
-                    ref={ref}
-                    rotation={sizes.carRotation}
-                    scale={sizes.carScale}
-                    castShadow={false}
-                    receiveShadow={false}
+                <Suspense fallback={null}>
+                  <MemoizedReactModel
+                    ref={reactModelRef}
+                    position={sizes.atomPosition}
+                    rotation={sizes.atomRotation}
+                    scale={sizes.atomScale}
+                    onAfterRender={() => handleComponentLoad('reactModel')}
                   />
-                </Float>
-              ) : (
-                <MemoizedCar
-                  ref={ref}
-                  rotation={sizes.carRotation}
-                  scale={sizes.carScale}
-                  castShadow
-                  receiveShadow
-                />
-              )}
-            </group>
-
-            {/* Load non-critical elements with a separate suspense boundary */}
-            <Suspense fallback={null}>
-              <Float speed={2} rotationIntensity={0.2} floatIntensity={0.7}>
-                <MemoizedReactModel
-                  ref={ref}
-                  position={sizes.atomPosition}
-                  rotation={sizes.atomRotation}
-                  scale={sizes.atomScale}
-                />
-              </Float>
-                <Float speed={2} rotationIntensity={0.1} floatIntensity={0.7}>
+                </Suspense>
+                
+                <Suspense fallback={null}>
                   <MemoizedHeroEarth
-                    ref={ref}
+                    ref={earthRef}
                     position={sizes.earthPosition}
                     scale={sizes.earthScale}
+                    onAfterRender={() => handleComponentLoad('earth')}
                   />
-                </Float>
-              
+                </Suspense>
+                
+                <Suspense fallback={null}>
+                  <group ref={droneRef}>
+                    <MemoizedDrone
+                      position={sizes.dronePosition}
+                      scale={sizes.droneScale}
+                      onAfterRender={() => handleComponentLoad('drone')}
+                    />
+                  </group>
+                </Suspense>
 
-              <group ref={droneRef}>
-                <MemoizedDrone
-                  position={sizes.dronePosition}
-                  scale={sizes.droneScale}
-                />
-              </group>
-            </Suspense>
-
-            {/* Combined effects for better performance */}
-            
-              <SceneEffects
-                lightRefs={[lightRef1, lightRef2]}
-                objectRefs={ref}
-                droneRef={droneRef}
-              />
-            
+                {shouldRenderEffects && (
+                  <SceneEffects
+                    lightRefs={[lightRef1, lightRef2]}
+                    objectRefs={roomRef}
+                    droneRef={droneRef}
+                  />
+                )}
+              </>
+            )}
           </Suspense>
         </Canvas>
       </div>
@@ -226,4 +317,6 @@ function Hero() {
     </section>
   );
 }
+
+// Create a higher-order component for better performance management
 export default memo(Hero);

@@ -5,7 +5,7 @@ import { MeshStandardMaterial } from "three";
 
 export function ReactModel(props) {
   // Load the model only once
-  const { nodes } = useGLTF("/models/React/scene.gltf");
+  const { nodes } = useGLTF("/models/React/scene.glb");
 
   // Create a reference for the React logo mesh
   const reactLogoRef = useRef();
@@ -62,4 +62,4 @@ export function ReactModel(props) {
 }
 
 // Preload with a draco decoder option if your model is draco compressed
-useGLTF.preload("/models/React/scene.gltf");
+useGLTF.preload("/models/React/scene.glb");

@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import { Environment, Grid } from "@react-three/drei";
 
 export function Car(props) {
-  const { nodes, materials } = useGLTF("/models/Car/scene.gltf");
+  const { nodes, materials } = useGLTF("/models/Car/scene1.glb");
   return (
     <group {...props} dispose={null}>
       {/* Add a simple environment */}
@@ -293,10 +293,10 @@ export function Car(props) {
           />
         </group>
 
-        {/* Removed the large plane from the original scene */}
+        {/* Removed the large plane from the original scene11 */}
       </group>
     </group>
   );
 }
 
-useGLTF.preload("/models/Car/scene.gltf");
+useGLTF.preload("/models/Car/scene1.glb");

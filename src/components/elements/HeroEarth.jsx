@@ -6,7 +6,7 @@ import { useFrame } from "@react-three/fiber";
 // Performance-optimized HeroEarth component
 export const HeroEarth = memo(function HeroEarth(props) {
   // Load and memoize the GLTF model
-  const { nodes, materials } = useGLTF("/models/earth.gltf");
+  const { nodes, materials } = useGLTF("/models/earth.glb");
   
   // Create a reference for the rotating group
   const earthRef = useRef();
@@ -60,4 +60,4 @@ export const HeroEarth = memo(function HeroEarth(props) {
 });
 
 // Preload the model to prevent loading jank
-useGLTF.preload("/models/earth.gltf");
+useGLTF.preload("/models/earth.glb");

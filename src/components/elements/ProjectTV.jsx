@@ -21,7 +21,7 @@ export default function ProjectTV(props) {
     gsap.from(group.current.rotation, {
       y: Math.PI * 2.5,
       duration: 1,
-      ease: 'power2.inOut',
+      ease: 'power2.easeOut'
     })
   }, [txt])
 

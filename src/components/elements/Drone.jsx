@@ -7,18 +7,7 @@ import {
 import { easing } from "maath";
 import * as THREE from "three";
 
-// Memoized Grid component to prevent unnecessary renders
-const MemoizedGrid = memo(({ position, color }) => (
-  <Grid
-    renderOrder={-1}
-    position={position}
-    infiniteGrid
-    sectionSize={5}
-    sectionThickness={1.5}
-    sectionColor={color}
-    fadeDistance={70}
-  />
-));
+// Memoized Grid component to prevent unnecessary render
 
 // Performance-optimized Kamdo component
 const Kamdo = memo(function Kamdo(props) {
@@ -28,7 +17,7 @@ const Kamdo = memo(function Kamdo(props) {
   
   // Load model only once
   const { nodes, materials } = useGLTF(
-    "/models/Drone/s2wt_kamdo_industrial_divinities-transformed.glb"
+    "/models/Drone/Drone.glb"
   );
   
   // Pre-compute any static values
@@ -84,21 +73,17 @@ const Kamdo = memo(function Kamdo(props) {
 
 // Main Drone component memoized for performance
 const Drone = memo(function Drone(props) {
-  // Pre-compute grid color and position
-  const gridPosition = useMemo(() => [0, -1.85, 0], []);
-  const gridColor = useMemo(() => [0.1, 0.2, 10], []);
   
   return (
     <group {...props} dispose={null}>
       <Kamdo rotation={[0, Math.PI + 0.2, 0]} {...props} />
-      <MemoizedGrid position={gridPosition} color={gridColor} />
     </group>
   );
 });
 
 // Ensure model is preloaded
 useGLTF.preload(
-  "/models/Drone/s2wt_kamdo_industrial_divinities-transformed.glb"
+  "/models/Drone/Drone.glb"
 );
 
 export default Drone;

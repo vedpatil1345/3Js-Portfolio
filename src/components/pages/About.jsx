@@ -57,13 +57,13 @@ const About = () => {
   };
 
   return (
-    <div className="w-[95vw] mx-auto px-4 py-8">
+    <div className="w-[90vw] mx-auto px-4 py-8">
       <h1 className="text-5xl font-extrabold text-black dark:text-white mb-8 text-center md:text-left">About</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {/* Profile Card */}
-        <div className="grid grid-rows-[50%_50%] gap-6 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
-          <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 pt-12 pb-16 px-6">
+        <div className="flex flex-col  gap-6 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
+          <div className="h-1/2 relative bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
             <div className="absolute top-3 left-3 flex space-x-2">
               <div className="bg-red-500 h-3 w-3 rounded-full"></div>
               <div className="bg-yellow-500 h-3 w-3 rounded-full"></div>
@@ -91,33 +91,30 @@ const About = () => {
         </div>
 
         {/* Skills Card */}
-        <div className="grid grid-rows-[50%_50%] border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
-          <div className="flex overflow-hidden">
+        <div className="flex flex-col border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
+          <div className="h-64 p-6 overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
             <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading skills...</div>}>
               <Skills />
             </Suspense>
           </div>
-          <div className="p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+          <div className="p-6 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
             <h4 className="text-xl font-bold text-center text-gray-900 dark:text-gray-100 mb-3">
               My Tool Box
             </h4>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              My tech stack includes React, Next.js, Java, JavaScript,
-              TypeScript, Python, Node.js, Express, Django, Flask, SQL, MongoDB,
-              and TensorFlow. I specialize in building and optimizing
-              applications, leveraging Git, GitHub, and VS Code for development.
+            My tech stack includes React, Next.js, TypeScript, JavaScript, Python, Java, Node.js, Express, MongoDB, SQL, PostgreSQL, Django, and Flask. I specialize in building and optimizing intelligent web applications, leveraging tools like Git, GitHub, and VS Code to streamline development and collaboration.
             </p>
           </div>
         </div>
 
         {/* Contact Card */}
-        <div className="grid grid-rows-[50%_50%] gap-6 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
-          <div className="h-1/2 p-6">
+        <div className="flex flex-col gap-6 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
+          <div className="h-1/2 overflow-hidden p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
             <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading clock...</div>}>
               <Clock />
             </Suspense>
           </div>
-          <div className="p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex flex-col items-center h-1/2">
+          <div className=" bg-white dark:bg-gray-900 flex flex-col items-center">
             <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Contact Me
             </h4>
@@ -163,7 +160,7 @@ const About = () => {
         </div>
 
         {/* Contact Form */}
-        <div className="flex flex-col border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900 p-6">
+        <div className="flex flex-col border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 p-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Let's talk</h2>
           <p className="mb-6 text-gray-600 dark:text-gray-400">
             Looking to build a website or improve your platform? Let's chat!
@@ -248,7 +245,7 @@ const About = () => {
         </div>
 
         {/* Resume Card - Use iframe instead of embed for better performance */}
-        <div className="col-span-1 md:col-span-2 flex flex-col border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-white dark:bg-gray-900">
+        <div className="col-span-1 md:col-span-2 flex flex-col border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
           <div className="rounded-t-lg overflow-hidden h-[450px]">
             <Suspense fallback={'LoadingManager....'}>
               <iframe src="/Ved.pdf" width="100%" height="100%" className="border-b border-gray-300 dark:border-gray-700" title="Resume"></iframe>

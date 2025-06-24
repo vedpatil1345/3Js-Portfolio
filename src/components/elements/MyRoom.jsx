@@ -35,7 +35,7 @@ const OptimizedMesh = memo(({ geometry, material, position, rotation, scale, sha
 ));
 
 export const MyRoom = memo((props) => {
-  const { nodes, materials } = useGLTF("/models/MyRoom/scene.gltf");
+  const { nodes, materials } = useGLTF("/models/MyRoom/scene.glb");
   
   // Decide whether to use shadows based on props
   const shadowProps = useMemo(() => ({
@@ -259,4 +259,4 @@ export const MyRoom = memo((props) => {
 });
 
 // Ensure model is preloaded
-useGLTF.preload("/models/MyRoom/scene.gltf");
+useGLTF.preload("/models/MyRoom/scene.glb");

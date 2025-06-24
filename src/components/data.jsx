@@ -25,9 +25,9 @@ export const calculateSizes = (isMobile, isTablet) => {
     carPosition: isMobile
       ? [0, -1.3, 3]
       : isTablet
-      ? [1, -1, 3]
-      : [1.7, -1.45, 3],
-    carRotation: isMobile ? [0, -Math.PI / 8, 0] : [0, -Math.PI / 4, 0],
+        ? [1, -1, 3]
+        : [1.7, -1.45, 3],
+    carRotation: isMobile ? [0, -Math.PI / 6, 0] : [0, -Math.PI / 4, 0],
     carScale: isMobile ? 0.2 : isTablet ? 0.2 : 0.35,
     atomScale: isMobile ? 0.12 : isTablet ? 0.15 : 0.2,
     atomPosition: isMobile ? [1, 1.2, 3] : isTablet ? [1.7, 2, 3] : [3.2, 1.4, 3],
@@ -36,14 +36,14 @@ export const calculateSizes = (isMobile, isTablet) => {
     earthPosition: isMobile
       ? [-1, 1.1, 3]
       : isTablet
-      ? [-1.7, 2, 3]
-      : [-4, 1.7, 2],
+        ? [-1.7, 2, 3]
+        : [-4, 1.7, 2],
     droneScale: isMobile ? 0.45 : isTablet ? 0.45 : 0.7,
     dronePosition: isMobile
       ? [-0.5, -1, 3]
       : isTablet
-      ? [-1, -0.7, 3]
-      : [-2.5, -1.4, 1],
+        ? [-1, -0.7, 3]
+        : [-2.5, -1.4, 1],
   };
 };
 
@@ -60,26 +60,26 @@ export const techskills = [
   { name: "Express", icon: "/assets/express.svg" },
   { name: "Node.js", icon: "/assets/nodejs.svg" },
   { name: "JavaScript", icon: "/assets/javascript.svg" },
-  { name: "NextJs" , icon: "/assets/nextjs.svg"}
+  { name: "NextJs", icon: "/assets/nextjs.svg" }
 ];
 
-const codetalkDesc = ()=>{
-  return(
+const codetalkDesc = () => {
+  return (
     <div>
-  <h2 className='text-2xl font-bold text-blue-600'>CodeTalk - AI Code Assistant</h2>
-  <p className='text-gray-700 dark:text-gray-300'>
-    CodeTalk is a smart web app built with React & TypeScript that uses AI (LLaMA 3.3 70B & Gemini) to assist developers with coding, debugging, and translating code.
-  </p>
-  <ul className='list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1'>
-    <li>AI-powered code generation</li>
-    <li>Code & error analysis</li>
-    <li>Image to UI code (Gemini)</li>
-    <li>Multilingual code translation</li>
-    <li>Voice command integration</li>
-    <li>Real-time suggestions & debugging</li>
-    <li>Custom themes & responsive UI</li>
-  </ul>
-</div>
+      <h2 className='text-2xl font-bold text-blue-600'>CodeTalk - AI Code Assistant</h2>
+      <p className='text-gray-700 dark:text-gray-300'>
+        CodeTalk is a smart web app built with React & TypeScript that uses AI (LLaMA 3.3 70B & Gemini) to assist developers with coding, debugging, and translating code.
+      </p>
+      <ul className='list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1'>
+        <li>AI-powered code generation</li>
+        <li>Code & error analysis</li>
+        <li>Image to UI code (Gemini)</li>
+        <li>Multilingual code translation</li>
+        <li>Voice command integration</li>
+        <li>Real-time suggestions & debugging</li>
+        <li>Custom themes & responsive UI</li>
+      </ul>
+    </div>
 
   )
 }
@@ -216,7 +216,7 @@ const CropCareDesc = () => {
         <li>Available in multiple Indian languages for accessibility</li>
       </ul>
       <p className='mt-4 text-gray-700 dark:text-gray-300'>
-        <span className='font-semibold'>Tech Stack:</span> 
+        <span className='font-semibold'>Tech Stack:</span>
       </p>
       <p className='mt-2 text-gray-700 dark:text-gray-300'>
         <span className='font-semibold'>Target Users:</span> Small to medium-scale farmers, agriculture students, extension officers, NGOs, and agri-tech startups.
@@ -225,72 +225,7 @@ const CropCareDesc = () => {
   );
 };
 
-export const projects = [
-  {
-    name:"CodeTalk",
-    description:codetalkDesc(),
-    image:"/projects/Codetalk.png",
-    gitLink:"https://github.com/vedpatil1345/CodeTalk",
-    demoLink:"https://codetalk-2.vercel.app",
-    techStack:['React', 'TypeScript', 'Groq(LaMMa 3.3 70B)', 'Firebase', 'Gemini API'],
-  },
-  {
-    name:"Cropcare",
-    description:CropCareDesc(),
-    image:"/projects/crop.png",
-    gitLink:"https://github.com/vedpatil1345/Crop-care",
-    demoLink:"https://cropcare-1.vercel.app",
-    techStack:['Next.js', 'Firebase', 'Supabase', 'Gemini API', 'OpenWeatherMap API'],
-  },
-  {
-    name:"Alpha",
-    description:AlphaDesc(),
-    image:"/projects/alpha.png",
-    gitLink:"https://github.com/vedpatil1345/Ai-interview",
-    demoLink:"https://ai-interview-indol.vercel.app/",
-    techStack:['Next.js', 'Clerk', 'Supabase', 'Gemini API'],
-  },
-  {
-    name:"Mental Health Chatbot",
-    description:MentalHealthChatbotDesc(),
-    image:"/projects/MentalBot.png",
-    gitLink:"https://github.com/vedpatil1345/MentalHealthBot",
-    demoLink:"https://mentalhealthbot-v.streamlit.app",
-    techStack:["python","transformers","lora","streamlit","langchain"],
-  },
-  {
-    name:"E-plantShopping",
-    description:EplantShoppingDesc(),
-    image:"/projects/EPlantShoping.png",
-    gitLink:"https://github.com/vedpatil1345/E-plantShopping",
-    demoLink:"https://e-plantshopping-sand.vercel.app",
-    techStack:['React', 'Tailwind CSS'],
-  },
-  {
-    name:"WebCapture",
-    description:WebHarvestDesc(),
-    image:"/projects/WebCapture.png",
-    gitLink:"https://github.com/vedpatil1345/Web-Scrapper",
-    demoLink:"https://web-scrapper-v.streamlit.app",
-    techStack:["python","beautifulsoup","pandas","streamlit"],
-  },
-  {
-    name:"portfolio-1",
-    description:PortfolioDesc(),
-    image:"/projects/Portfolio-1.png",
-    gitLink:"https://github.com/vedpatil1345/portfolio",
-    demoLink:"https://vedpatil.vercel.app/",
-    techStack:['React', 'Tailwind CSS', 'shadcn/ui'],
-  },
-  {
-    name:"portfolio-2",
-    description:Portfolio2Desc(),
-    image:"/projects/Portfolio-2.png",
-    gitLink:"https://github.com/vedpatil1345/3Js-Portfolio",
-    demoLink:"https://ved-patil.vercel.app/",
-    techStack:['React', 'Tailwind CSS', 'Three.js', 'shadcn/ui', 'React Three Fiber'],
-  },
-];
+
 const OneM1BExperienceDesc = () => {
   return (
     <div>
@@ -340,6 +275,36 @@ const MERNInternshipDesc = () => {
 
 export const workExperiences = [
   {
+    name: "Tech Elecon Pvt. Ltd.",
+    pos: "Frontend & Full-Stack Developer Intern",
+    duration: "May 2025 - Jun 2025",
+    title: "Contributed to full-stack web development projects using modern frontend frameworks and deployment tools.",
+    animation: "coding",
+    icon: "/elecon.png",
+    description: ["Built responsive and performant web interfaces using React, Vite, Tailwind CSS, and Radix UI",
+                  "Developed and deployed a code execution platform using React, Monaco Editor,Redux-Toolkit,and Node.js with Piston API integration",
+                  "Worked on a role-based Learning Management System (LMS) using Next.js and Supabase for authentication and data handling",
+                  "Integrated real-time session tracking, attendance view, and certificate generation features in LMS dashboard",
+                  "Collaborated with teams and mentor to understand business requirements and translate them into technical solutions",
+                  "Deployed applications using GitHub Pages, Vercel, and Render for optimized production performance"
+                ],
+                skills: [
+                  "React",
+                  "Vite",
+                  "Tailwind CSS",
+                  "Radix UI",
+                  "Next.js",
+                  "Supabase",
+                  "Monaco Editor",
+                  "Zustand",
+                  "Node.js",
+                  "Piston API",
+                  "GitHub",
+                  "Vercel",
+                  "Render"
+                ]
+  },
+  {
     name: "1M1B Foundation",
     pos: "AI & XR Intern",
     duration: "Sep 2024 - Nov 2024",
@@ -353,7 +318,7 @@ export const workExperiences = [
       "Explored prompt engineering techniques to optimize LLM performance for multi-turn conversation scenarios",
       "Integrated AI components into interactive prototypes for real-world social impact use cases"
     ],
-    skills: [ "Python", "Transformers",'LLM','lora','streamlit','langchain'],
+    skills: ["Python", "Transformers", 'LLM', 'lora', 'streamlit', 'langchain'],
   },
   {
     name: "AICTE + EY",
@@ -368,5 +333,99 @@ export const workExperiences = [
       "Collaborated in Agile teams and deployed weekly builds for feedback"
     ],
     skills: ["MongoDB", "Express.js", "React", "Node.js", "Git", "Tailwind CSS"]
+  },
+];
+const LMSDesc = () => {
+  return (
+    <div>
+      <h2 className='text-2xl font-bold text-indigo-600'>Internship LMS Dashboard</h2>
+      <p className='text-gray-700 dark:text-gray-300'>
+        A full-featured Learning Management System (LMS) tailored for internship management. Designed for admins, mentors, and interns with role-based access and real-time interaction.
+      </p>
+      <ul className='list-disc list-inside text-gray-800 dark:text-gray-200 space-y-1'>
+        <li>Role-based dashboards for Admin, Mentor, and Intern</li>
+        <li>Session management with recordings and study material uploads</li>
+        <li>Attendance tracking and real-time session overview</li>
+        <li>Offer letter and certificate generation interface</li>
+        <li>Built using modern UI frameworks with responsive design</li>
+        <li>Auth and data layer powered by Supabase</li>
+        <li>Deployed using Vercel for production-ready delivery</li>
+      </ul>
+    </div>
+  );
+};
+
+export const projects = [
+  {
+  name: "Internship LMS",
+  description: LMSDesc(),
+  image: "/projects/LMS.png",
+  gitLink: "https://github.com/vedpatil1345/Intern-s-Learning-Management-System",
+  demoLink: "https://iotechzved.vercel.app",
+  techStack: ["Next.js", "Tailwind CSS", "Radix UI", "Supabase", "TypeScript", "Vercel"]
+},
+  {
+    name: "CodeTalk",
+    description: codetalkDesc(),
+    image: "/projects/Codetalk.png",
+    gitLink: "https://github.com/vedpatil1345/CodeTalk",
+    demoLink: "https://codetalk-2.vercel.app",
+    techStack: ['React', 'TypeScript', 'Groq(LaMMa 3.3 70B)', 'Firebase', 'Gemini API'],
+  },
+  {
+    name: "Cropcare",
+    description: CropCareDesc(),
+    image: "/projects/crop.png",
+    gitLink: "https://github.com/vedpatil1345/Crop-care",
+    demoLink: "https://cropcare-1.vercel.app",
+    techStack: ['Next.js', 'Firebase', 'Supabase', 'Gemini API', 'OpenWeatherMap API'],
+  },
+  {
+    name: "Alpha",
+    description: AlphaDesc(),
+    image: "/projects/alpha.png",
+    gitLink: "https://github.com/vedpatil1345/Ai-interview",
+    demoLink: "https://ai-interview-indol.vercel.app/",
+    techStack: ['Next.js', 'Clerk', 'Supabase', 'Gemini API'],
+  },
+  {
+    name: "Mental Health Chatbot",
+    description: MentalHealthChatbotDesc(),
+    image: "/projects/MentalBot.png",
+    gitLink: "https://github.com/vedpatil1345/MentalHealthBot",
+    demoLink: "https://mentalhealthbot-v.streamlit.app",
+    techStack: ["python", "transformers", "lora", "streamlit", "langchain"],
+  },
+  {
+    name: "E-plantShopping",
+    description: EplantShoppingDesc(),
+    image: "/projects/EPlantShoping.png",
+    gitLink: "https://github.com/vedpatil1345/E-plantShopping",
+    demoLink: "https://e-plantshopping-sand.vercel.app",
+    techStack: ['React', 'Tailwind CSS'],
+  },
+  {
+    name: "WebCapture",
+    description: WebHarvestDesc(),
+    image: "/projects/WebCapture.png",
+    gitLink: "https://github.com/vedpatil1345/Web-Scrapper",
+    demoLink: "https://web-scrapper-v.streamlit.app",
+    techStack: ["python", "beautifulsoup", "pandas", "streamlit"],
+  },
+  {
+    name: "portfolio-1",
+    description: PortfolioDesc(),
+    image: "/projects/Portfolio-1.png",
+    gitLink: "https://github.com/vedpatil1345/portfolio",
+    demoLink: "https://vedpatil.vercel.app/",
+    techStack: ['React', 'Tailwind CSS', 'shadcn/ui'],
+  },
+  {
+    name: "portfolio-2",
+    description: Portfolio2Desc(),
+    image: "/projects/Portfolio-2.png",
+    gitLink: "https://github.com/vedpatil1345/3Js-Portfolio",
+    demoLink: "https://ved-patil.vercel.app/",
+    techStack: ['React', 'Tailwind CSS', 'Three.js', 'shadcn/ui', 'React Three Fiber'],
   },
 ];
