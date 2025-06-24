@@ -279,7 +279,7 @@ export const workExperiences = [
     pos: "Frontend & Full-Stack Developer Intern",
     duration: "May 2025 - Jun 2025",
     title: "Contributed to full-stack web development projects using modern frontend frameworks and deployment tools.",
-    animation: "coding",
+    animation: "salute",
     icon: "/elecon.png",
     description: ["Built responsive and performant web interfaces using React, Vite, Tailwind CSS, and Radix UI",
                   "Developed and deployed a code execution platform using React, Monaco Editor,Redux-Toolkit,and Node.js with Piston API integration",

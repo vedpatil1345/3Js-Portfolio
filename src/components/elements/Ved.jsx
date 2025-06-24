@@ -29,7 +29,7 @@ export function Ved({ animationName = 'idle', ...props }) {
   useEffect(() => {
     if (actions[animationName]) {
       actions[animationName].reset().fadeIn(0.5).play();
-      return () => actions[animationName].fadeOut(0.5);
+      return () => actions[animationName];
     }
   }, [actions, animationName,clone]);
 
