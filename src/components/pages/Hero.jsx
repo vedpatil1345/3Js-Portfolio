@@ -21,6 +21,7 @@ import { HeroEarth } from "../elements/HeroEarth";
 import Drone from "../elements/Drone";
 import { calculateSizes } from "../data";
 import { Route, useNavigate } from "react-router-dom";
+import Skills from "../elements/Skills";
 
 // Memoize scene elements to prevent unnecessary re-renders
 const MemoizedRoom = memo(MyRoom);
@@ -34,6 +35,56 @@ const MemoizedSky = memo(Sky);
 const StarsComponent = memo(() => (
   <Stars saturation={0} count={500} speed={1} />
 ));
+
+// Model Tooltip Component with Skills integration
+const ModelTooltip = memo(({ label, description, position, visible, showSkills }) => {
+  if (!visible) return null;
+  
+  return (
+    <div 
+      className="absolute pointer-events-none z-30 transition-all duration-300 ease-out"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        transform: showSkills ? 'translate(-50%, -50%)' : 'translate(-50%, -120%)',
+        opacity: visible ? 1 : 0,
+      }}
+    >
+      <div className={`backdrop-blur-md rounded-xl shadow-2xl border ${showSkills ? 'bg-gradient-to-br from-blue-50/95 to-indigo-100/95 dark:from-gray-800/95 dark:to-gray-900/95 border-blue-200 dark:border-blue-800 p-5 w-96' : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700 px-4 py-2'} transition-all duration-300`}>
+        {showSkills ? (
+          <div className="space-y-3">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <div className="h-1 w-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+              <p className="font-bold text-base text-gray-900 dark:text-white text-center">{label}</p>
+              <div className="h-1 w-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"></div>
+            </div>
+            <div className="h-52 flex items-center justify-center relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-indigo-100/50 dark:from-gray-700/30 dark:to-gray-800/30 rounded-lg blur-xl"></div>
+              <div className="relative z-10">
+                <Skills />
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-1 pt-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse delay-75"></div>
+              <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse delay-150"></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="font-semibold text-sm text-gray-900 dark:text-white whitespace-nowrap">{label}</p>
+            {description && (
+              <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">{description}</p>
+            )}
+          </>
+        )}
+      </div>
+      {!showSkills && (
+        <div className="w-2 h-2 bg-white dark:bg-gray-800 rotate-45 absolute left-1/2 -translate-x-1/2 -bottom-1 border-r border-b border-gray-200 dark:border-gray-700"></div>
+      )}
+    </div>
+  );
+});
 
 // Effects component to avoid duplicate EffectComposers
 // Fixed to handle refs properly with null checks and using current property
@@ -102,6 +153,11 @@ function Hero() {
   const [isVisible, setIsVisible] = useState(true);
   const sectionRef = useRef(null);
   const GPUTier = useDetectGPU();
+  
+  // Tooltip states
+  const [hoveredModel, setHoveredModel] = useState(null);
+  const [tooltipPositions, setTooltipPositions] = useState({});
+  const canvasRef = useRef(null);
 
   // Use Intersection Observer to detect when section is visible
   useEffect(() => {
@@ -198,15 +254,61 @@ function Hero() {
     }));
   }, []);
 
+  // Model tooltips data
+  const modelTooltips = {
+    room: { label: "My Workspace", description: "Full-Stack Development" },
+    car: { label: "Creative Design", description: "UI/UX & Animation" },
+    react: { label: "Frontend Magic", description: "React & Three.js" },
+    earth: { label: "Backend & APIs", description: "Server-Side Solutions" },
+    drone: { label: "Innovation & Tech", description: "Future of Development" }
+  };
+
   return (
     <section className="h-screen max-w-screen flex flex-col relative" ref={sectionRef}>
-      <div className="mx-auto flex flex-col mt-36 z-10 relative w-full h-full">
+      {/* Tooltips Layer */}
+      {!ismobile && (
+        <>
+          <ModelTooltip 
+            label={modelTooltips.room.label} 
+            description={modelTooltips.room.description}
+            position={tooltipPositions.room || { x: 0, y: 0 }}
+            visible={hoveredModel === 'room'}
+            showSkills={true}
+          />
+          <ModelTooltip 
+            label={modelTooltips.car.label} 
+            description={modelTooltips.car.description}
+            position={tooltipPositions.car || { x: 0, y: 0 }}
+            visible={hoveredModel === 'car'}
+          />
+          <ModelTooltip 
+            label={modelTooltips.react.label} 
+            description={modelTooltips.react.description}
+            position={tooltipPositions.react || { x: 0, y: 0 }}
+            visible={hoveredModel === 'react'}
+          />
+          <ModelTooltip 
+            label={modelTooltips.earth.label} 
+            description={modelTooltips.earth.description}
+            position={tooltipPositions.earth || { x: 0, y: 0 }}
+            visible={hoveredModel === 'earth'}
+          />
+          <ModelTooltip 
+            label={modelTooltips.drone.label} 
+            description={modelTooltips.drone.description}
+            position={tooltipPositions.drone || { x: 0, y: 0 }}
+            visible={hoveredModel === 'drone'}
+          />
+        </>
+      )}
+      
+      <div className="mx-auto flex flex-col mt-36 z-10 relative w-full h-full pointer-events-none">
         <p className="text-2xl md:text-3xl lg:text-5xl text-center">
           Hi, I am Ved <span className="waving-hand">👋</span>
         </p>
         <p className="gradient-heading">Learn Grow & Inspire.</p>
       </div>
-      <div className="absolute top-0 left-0 w-full h-full">
+      <div className="absolute top-0 left-0 w-full h-full" ref={canvasRef}>
         <Canvas
           shadows={qualitySettings.shadows}
           className="h-full w-full z-0"
@@ -231,15 +333,30 @@ function Hero() {
             />
 
             <HeroCamera isMobile={ismobile}>
-              <MemoizedRoom
-                ref={roomRef}
-                position={sizes.deskPosition}
-                rotation={sizes.deskRotation}
-                scale={sizes.deskScale}
-                castShadow={qualitySettings.shadows}
-                receiveShadow={qualitySettings.shadows}
-                onAfterRender={() => handleComponentLoad('room')}
-              />
+              <group
+                onPointerOver={(e) => {
+                  e.stopPropagation();
+                  setHoveredModel('room');
+                  if (canvasRef.current) {
+                    const rect = canvasRef.current.getBoundingClientRect();
+                    setTooltipPositions(prev => ({
+                      ...prev,
+                      room: { x: rect.width / 2, y: rect.height / 3 }
+                    }));
+                  }
+                }}
+                onPointerOut={() => setHoveredModel(null)}
+              >
+                <MemoizedRoom
+                  ref={roomRef}
+                  position={sizes.deskPosition}
+                  rotation={sizes.deskRotation}
+                  scale={sizes.deskScale}
+                  castShadow={qualitySettings.shadows}
+                  receiveShadow={qualitySettings.shadows}
+                  onAfterRender={() => handleComponentLoad('room')}
+                />
+              </group>
             </HeroCamera>
 
             <color attach="background" args={[backgroundColor]} />
@@ -250,7 +367,21 @@ function Hero() {
             {isVisible && (
               <>
                 <Suspense fallback={null}>
-                  <group position={sizes.carPosition}>
+                  <group 
+                    position={sizes.carPosition}
+                    onPointerOver={(e) => {
+                      e.stopPropagation();
+                      setHoveredModel('car');
+                      if (canvasRef.current) {
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        setTooltipPositions(prev => ({
+                          ...prev,
+                          car: { x: rect.width * 0.7, y: rect.height * 0.7 }
+                        }));
+                      }
+                    }}
+                    onPointerOut={() => setHoveredModel(null)}
+                  >
                     <MemoizedCar
                       ref={carRef}
                       rotation={sizes.carRotation}
@@ -263,26 +394,70 @@ function Hero() {
                 </Suspense>
 
                 <Suspense fallback={null}>
-                  <MemoizedReactModel
-                    ref={reactModelRef}
-                    position={sizes.atomPosition}
-                    rotation={sizes.atomRotation}
-                    scale={sizes.atomScale}
-                    onAfterRender={() => handleComponentLoad('reactModel')}
-                  />
+                  <group
+                    onPointerOver={(e) => {
+                      e.stopPropagation();
+                      setHoveredModel('react');
+                      if (canvasRef.current) {
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        setTooltipPositions(prev => ({
+                          ...prev,
+                          react: { x: rect.width * 0.75, y: rect.height * 0.3 }
+                        }));
+                      }
+                    }}
+                    onPointerOut={() => setHoveredModel(null)}
+                  >
+                    <MemoizedReactModel
+                      ref={reactModelRef}
+                      position={sizes.atomPosition}
+                      rotation={sizes.atomRotation}
+                      scale={sizes.atomScale}
+                      onAfterRender={() => handleComponentLoad('reactModel')}
+                    />
+                  </group>
                 </Suspense>
                 
                 <Suspense fallback={null}>
-                  <MemoizedHeroEarth
-                    ref={earthRef}
-                    position={sizes.earthPosition}
-                    scale={sizes.earthScale}
-                    onAfterRender={() => handleComponentLoad('earth')}
-                  />
+                  <group
+                    onPointerOver={(e) => {
+                      e.stopPropagation();
+                      setHoveredModel('earth');
+                      if (canvasRef.current) {
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        setTooltipPositions(prev => ({
+                          ...prev,
+                          earth: { x: rect.width * 0.25, y: rect.height * 0.3 }
+                        }));
+                      }
+                    }}
+                    onPointerOut={() => setHoveredModel(null)}
+                  >
+                    <MemoizedHeroEarth
+                      ref={earthRef}
+                      position={sizes.earthPosition}
+                      scale={sizes.earthScale}
+                      onAfterRender={() => handleComponentLoad('earth')}
+                    />
+                  </group>
                 </Suspense>
                 
                 <Suspense fallback={null}>
-                  <group ref={droneRef}>
+                  <group 
+                    ref={droneRef}
+                    onPointerOver={(e) => {
+                      e.stopPropagation();
+                      setHoveredModel('drone');
+                      if (canvasRef.current) {
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        setTooltipPositions(prev => ({
+                          ...prev,
+                          drone: { x: rect.width * 0.3, y: rect.height * 0.7 }
+                        }));
+                      }
+                    }}
+                    onPointerOut={() => setHoveredModel(null)}
+                  >
                     <MemoizedDrone
                       position={sizes.dronePosition}
                       scale={sizes.droneScale}
@@ -303,7 +478,7 @@ function Hero() {
           </Suspense>
         </Canvas>
       </div>
-      <div className="absolute bottom-28 md:bottom-18 left-0 right-0 w-full z-20 sm:px-10 px-5">
+      <div className="absolute bottom-28 md:bottom-18 left-0 right-0 w-full z-20 sm:px-10 px-5 pointer-events-auto">
         <Button
           name="Let's work together"
           isBeam

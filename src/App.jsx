@@ -2,7 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { ThemeProvider } from "./components/theme-provider";
 import NavBar from "./components/NavBar";
-import MobileNextButton from "./components/MobileNextButton";
+import BottomNav from "./components/BottomNav";
 import PageTransition from "./components/PageTransition";
 import { usePageTransition } from "./components/usePageTransition";
 import Hero from "./components/pages/Hero";
@@ -28,7 +28,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col">
+      <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
         <NavBar />
         <main className="flex-1">
           <PageTransition 
@@ -44,7 +44,7 @@ function App() {
             </Routes>
           </PageTransition>
         </main>
-        <MobileNextButton />
+        <BottomNav />
       </div>
     </ThemeProvider>
   )
