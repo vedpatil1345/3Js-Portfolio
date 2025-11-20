@@ -269,13 +269,6 @@ function Hero() {
       {!ismobile && (
         <>
           <ModelTooltip 
-            label={modelTooltips.room.label} 
-            description={modelTooltips.room.description}
-            position={tooltipPositions.room || { x: 0, y: 0 }}
-            visible={hoveredModel === 'room'}
-            showSkills={true}
-          />
-          <ModelTooltip 
             label={modelTooltips.car.label} 
             description={modelTooltips.car.description}
             position={tooltipPositions.car || { x: 0, y: 0 }}
@@ -333,20 +326,7 @@ function Hero() {
             />
 
             <HeroCamera isMobile={ismobile}>
-              <group
-                onPointerOver={(e) => {
-                  e.stopPropagation();
-                  setHoveredModel('room');
-                  if (canvasRef.current) {
-                    const rect = canvasRef.current.getBoundingClientRect();
-                    setTooltipPositions(prev => ({
-                      ...prev,
-                      room: { x: rect.width / 2, y: rect.height / 3 }
-                    }));
-                  }
-                }}
-                onPointerOut={() => setHoveredModel(null)}
-              >
+              <group>
                 <MemoizedRoom
                   ref={roomRef}
                   position={sizes.deskPosition}
