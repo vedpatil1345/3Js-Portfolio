@@ -57,7 +57,7 @@ const About = () => {
   };
 
   return (
-    <div className="w-[90vw] mx-auto px-4 py-8">
+    <div className="w-[90vw] mx-auto px-4 py-8 mt-10">
       <h1 className="text-5xl font-extrabold text-black dark:text-white mb-8 text-center md:text-left">About</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
@@ -102,7 +102,7 @@ const About = () => {
               My Tool Box
             </h4>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            My tech stack includes React, Next.js, TypeScript, JavaScript, Python, Java, Node.js, Express, MongoDB, SQL, PostgreSQL, Django, and Flask. I specialize in building and optimizing intelligent web applications, leveraging tools like Git, GitHub, and VS Code to streamline development and collaboration.
+            My tech stack includes React, Next.js, jQuery, Tailwind CSS, Bootstrap, TypeScript, JavaScript, Python, Java, Node.js, Express, MongoDB, SQL, PostgreSQL and Flask. I specialize in building and optimizing intelligent web applications, leveraging tools like Git, GitHub, and VS Code to streamline development and collaboration.
             </p>
           </div>
         </div>

@@ -50,7 +50,6 @@ export const calculateSizes = (isMobile, isTablet) => {
 export const techskills = [
   { name: "Python", icon: "/assets/python.svg" },
   { name: "Java", icon: "/assets/java.svg" },
-  { name: "Flask", icon: "/assets/flask.svg" },
   { name: "Firebase", icon: "/assets/firebase.svg" },
   { name: "MySQL", icon: "/assets/mysql.svg" },
   { name: "TensorFlow", icon: "/assets/tensorflow.svg" },
@@ -276,7 +275,7 @@ const MERNInternshipDesc = () => {
 export const workExperiences = [
   {
     name: "Tech Elecon Pvt. Ltd.",
-    pos: "Frontend & Full-Stack Developer Intern",
+    pos: "Frontend Developer Intern",
     duration: "May 2025 - Jun 2025",
     title: "Contributed to full-stack web development projects using modern frontend frameworks and deployment tools.",
     animation: "salute",
@@ -292,16 +291,10 @@ export const workExperiences = [
                   "React",
                   "Vite",
                   "Tailwind CSS",
-                  "Radix UI",
                   "Next.js",
                   "Supabase",
-                  "Monaco Editor",
-                  "Zustand",
                   "Node.js",
                   "Piston API",
-                  "GitHub",
-                  "Vercel",
-                  "Render"
                 ]
   },
   {
@@ -357,7 +350,7 @@ const LMSDesc = () => {
 
 export const projects = [
   {
-  name: "Internship LMS",
+  name: "Internship LMS(OnGoing)",
   description: LMSDesc(),
   image: "/projects/LMS.png",
   gitLink: "https://github.com/vedpatil1345/Intern-s-Learning-Management-System",

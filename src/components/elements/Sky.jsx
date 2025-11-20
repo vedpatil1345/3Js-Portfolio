@@ -22,11 +22,14 @@ export function Sky() {
   return (
     <>
       <SkyImpl
-        distance={500}
-        scale={10000}
-        rayleigh={2}
-        turbidity={3}
-        sunPosition={[0,0, -1]}
+        distance={100}
+        azimuth={0.25}
+        scale={5000}
+        rayleigh={1}
+        turbidity={10}
+        inclination={0.5}
+        sunPosition={[0.1, 0, -5]}
+        mieCoefficient={0.005}
         
       />
       {/* Clouds far in the background */}

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useReducer, memo } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
+import React, { useReducer, memo } from "react";
+import { NavLink } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import ThemeLogo from "./ThemeLogo";
 import { ModeToggle } from "./mode-toggle";
 import { navItems } from "./data";
@@ -17,127 +17,19 @@ const menuReducer = (state, action) => {
 };
 
 const NavBar = memo(() => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeSection, setActiveSection] = useState('home');
-  const [isScrolling, setIsScrolling] = useState(false);
   const [state, dispatch] = useReducer(menuReducer, {
     isMenuOpen: false
   });
-  
-  const scrollToSection = (sectionId) => {
-    setIsScrolling(true);
-    const section = document.getElementById(sectionId);
-    if (section) {
-      const navbar = document.querySelector('header');
-      const navbarHeight = navbar?.offsetHeight || 0;
-      const offsetTop = section.offsetTop - navbarHeight;
 
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
-      });
-
-      setActiveSection(sectionId);
-      const newPath = sectionId === 'home' ? '/' : `/${sectionId}`;
-      navigate(newPath, { replace: true });
-      
-      setTimeout(() => {
-        setIsScrolling(false);
-      }, 1000);
-    }
-  };
-
-  useEffect(() => {
-    const updateActiveSection = () => {
-      if (isScrolling) return;
-
-      const navbar = document.querySelector('header');
-      const navbarHeight = navbar?.offsetHeight || 0;
-      const scrollPosition = window.scrollY + navbarHeight + 100;
-
-      let currentSection = 'home';
-      navItems.forEach(item => {
-        const section = item.name.toLowerCase();
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            currentSection = section;
-          }
-        }
-      });
-
-      if (activeSection !== currentSection) {
-        setActiveSection(currentSection);
-        const newPath = currentSection === 'home' ? '/' : `/${currentSection}`;
-        navigate(newPath, { replace: true });
-      }
-    };
-
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          updateActiveSection();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [activeSection, navigate, isScrolling]);
-
-  useEffect(() => {
-    const currentPath = location.pathname.slice(1) || 'home';
-    setActiveSection(currentPath);
-  }, [location]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const mobileMenu = document.getElementById('mobileMenu');
-      if (mobileMenu && !mobileMenu.contains(event.target) && state.isMenuOpen) {
-        dispatch({ type: 'CLOSE' });
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [state.isMenuOpen]);
-
-  // Close mobile menu when window is resized to desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 640 && state.isMenuOpen) {
-        dispatch({ type: 'CLOSE' });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [state.isMenuOpen]);
-
-  const handleNavClick = (e, section) => {
-    e.preventDefault();
-    const sectionId = section === 'home' ? 'home' : section;
-    scrollToSection(sectionId);
+  const handleNavClick = () => {
     dispatch({ type: 'CLOSE' });
   };
 
-  const isActive = (section) => {
-    if (section === 'home') {
-      return location.pathname === '/' || activeSection === 'home';
-    }
-    return location.pathname === `/${section}` || activeSection === section;
-  };
-
   return (
-    <header className="py-1 fixed top-2 ml-[3vw] w-[93vw] rounded-2xl mx-auto z-50 bg-white dark:bg-slate-900 shadow-xl dark:ring-2 dark:ring-blue-500/50 shadow-black/50 dark:shadow-blue-500/50">
+    <header className="py-1 fixed top-2 ml-[3vw] w-[93vw] rounded-2xl mx-auto z-100 bg-white dark:bg-slate-900 shadow-xl dark:ring-2 dark:ring-blue-500/50 shadow-black/50 dark:shadow-blue-500/50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-12">
-          <NavLink to="/" className="flex items-center " onClick={(e) => handleNavClick(e, 'home')}>
+          <NavLink to="/" className="flex items-center" onClick={handleNavClick}>
             <ThemeLogo />
           </NavLink>
           
@@ -147,12 +39,13 @@ const NavBar = memo(() => {
               <NavLink
                 to={item.path}
                 key={item.name}
-                onClick={(e) => handleNavClick(e, item.name.toLowerCase())}
-                className={`relative transition-all duration-300 ${
-                  isActive(item.name.toLowerCase())
-                    ? 'text-blue-600 dark:text-blue-400 font-bold'
-                    : 'text-blue-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:font-bold'
-                }`}
+                className={({ isActive }) =>
+                  `relative transition-all duration-300 ${
+                    isActive
+                      ? 'text-blue-600 dark:text-blue-400 font-bold'
+                      : 'text-blue-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:font-bold'
+                  }`
+                }
               >
                 {item.name}
               </NavLink>
@@ -188,12 +81,14 @@ const NavBar = memo(() => {
             <NavLink
               to={item.path}
               key={item.name}
-              onClick={(e) => handleNavClick(e, item.name.toLowerCase())}
-              className={`px-6 py-3 text-lg transition-all duration-200 ${
-                isActive(item.name.toLowerCase())
-                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-bold'
-                  : 'text-blue-900 dark:text-white hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
+              onClick={handleNavClick}
+              className={({ isActive }) =>
+                `px-6 py-3 text-lg transition-all duration-200 ${
+                  isActive
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-bold'
+                    : 'text-blue-900 dark:text-white hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:text-blue-600 dark:hover:text-blue-400'
+                }`
+              }
             >
               {item.name}
             </NavLink>

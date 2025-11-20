@@ -20,6 +20,7 @@ import { ReactModel } from "../elements/ReactModel";
 import { HeroEarth } from "../elements/HeroEarth";
 import Drone from "../elements/Drone";
 import { calculateSizes } from "../data";
+import { Route, useNavigate } from "react-router-dom";
 
 // Memoize scene elements to prevent unnecessary re-renders
 const MemoizedRoom = memo(MyRoom);
@@ -76,16 +77,11 @@ const SceneEffects = ({ lightRefs, objectRefs, droneRef }) => {
 
 // Optimize the button component with memo
 const Button = memo(({ name, isBeam = false, containerClass }) => {
-  const scrollToAbout = useCallback(() => {
-    const aboutSection = document.getElementById("about");
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+  const navigate = useNavigate();
 
   return (
     <button
-      onClick={scrollToAbout}
+      onClick={() => navigate('/about')}
       className={`flex gap-4 items-center justify-center cursor-pointer p-3 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 transition-all active:scale-95 text-black dark:text-white mx-auto ${containerClass}`}
     >
       {isBeam && (
