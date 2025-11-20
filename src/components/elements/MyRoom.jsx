@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from "react";
+import React, { useMemo, memo, useEffect } from "react";
 import { useGLTF, Instances, Instance } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -36,6 +36,27 @@ const OptimizedMesh = memo(({ geometry, material, position, rotation, scale, sha
 
 export const MyRoom = memo((props) => {
   const { nodes, materials } = useGLTF("/models/MyRoom/scene.glb");
+  
+  // Cleanup on unmount to free memory
+  useEffect(() => {
+    return () => {
+      // Dispose geometries
+      Object.values(nodes).forEach(node => {
+        if (node.geometry) node.geometry.dispose();
+      });
+      // Dispose materials
+      Object.values(materials).forEach(material => {
+        if (material.dispose) {
+          // Dispose textures
+          if (material.map) material.map.dispose();
+          if (material.normalMap) material.normalMap.dispose();
+          if (material.roughnessMap) material.roughnessMap.dispose();
+          if (material.metalnessMap) material.metalnessMap.dispose();
+          material.dispose();
+        }
+      });
+    };
+  }, [nodes, materials]);
   
   // Decide whether to use shadows based on props
   const shadowProps = useMemo(() => ({

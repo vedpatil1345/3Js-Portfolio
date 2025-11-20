@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useMemo, memo } from "react";
+import { useRef, useMemo, memo, useEffect } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
@@ -23,6 +23,15 @@ export const HeroEarth = memo(function HeroEarth(props) {
     mat.color = new THREE.Color("lightgreen");
     return mat;
   }, [materials]);
+  
+  // Cleanup materials on unmount
+  useEffect(() => {
+    return () => {
+      iceMaterial.dispose();
+      waterMaterial.dispose();
+      landMaterial.dispose();
+    };
+  }, [iceMaterial, waterMaterial, landMaterial]);
   
   // Memoize geometries
   const iceGeometry = useMemo(() => nodes["URF-Height_Lampd_Ice_0"].geometry, [nodes]);

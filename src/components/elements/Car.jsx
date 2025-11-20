@@ -1,9 +1,21 @@
-import React from "react";
+import React, { memo, useEffect } from "react";
 import { useGLTF } from "@react-three/drei";
-import { Environment, Grid } from "@react-three/drei";
 
-export function Car(props) {
+export const Car = memo(function Car(props) {
   const { nodes, materials } = useGLTF("/models/Car/scene1.glb");
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Dispose geometries and materials when component unmounts
+      Object.values(nodes).forEach(node => {
+        if (node.geometry) node.geometry.dispose();
+      });
+      Object.values(materials).forEach(material => {
+        if (material.dispose) material.dispose();
+      });
+    };
+  }, [nodes, materials]);
   return (
     <group {...props} dispose={null}>
       {/* Add a simple environment */}
@@ -20,26 +32,18 @@ export function Car(props) {
             scale={1.864}
           >
             <mesh
-              castShadow
-              receiveShadow
               geometry={nodes.tyresCylinder_metalblack_0.geometry}
               material={materials["metal.black"]}
             />
             <mesh
-              castShadow
-              receiveShadow
               geometry={nodes.tyresCylinder_lamborghini_0.geometry}
               material={materials.lamborghini}
             />
             <mesh
-              castShadow
-              receiveShadow
               geometry={nodes.tyresCylinder_metalbrass_0.geometry}
               material={materials["metal.brass"]}
             />
             <mesh
-              castShadow
-              receiveShadow
               geometry={nodes.tyresCylinder_Material003_0.geometry}
               material={materials["Material.003"]}
             />
@@ -297,6 +301,6 @@ export function Car(props) {
       </group>
     </group>
   );
-}
+});
 
 useGLTF.preload("/models/Car/scene1.glb");

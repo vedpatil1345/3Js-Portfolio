@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { MeshStandardMaterial } from "three";
@@ -19,6 +19,13 @@ export function ReactModel(props) {
       toneMapped: false,
     });
   }, []);
+  
+  // Cleanup material on unmount
+  useEffect(() => {
+    return () => {
+      material.dispose();
+    };
+  }, [material]);
 
   // Memoize position, rotation, and scale
   const position = useMemo(() => [0, 7.935, 0], []);
