@@ -29,7 +29,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
-        <NavBar />
+        <NavBar isLoading={isLoading} />
         <main className="flex-1 mt-5">
           <PageTransition 
             transitionStage={transitionStage} 
@@ -44,7 +44,7 @@ function App() {
             </Routes>
           </PageTransition>
         </main>
-        <BottomNav />
+        <BottomNav isLoading={isLoading} />
       </div>
     </ThemeProvider>
   )

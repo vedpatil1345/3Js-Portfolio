@@ -235,7 +235,7 @@ const Projects = () => {
   const visibleCards = 2;
 
   return (
-    <div className="w-[95vw] mx-auto px-4 py-8 mt-10">
+    <div className="w-[95vw] mx-auto px-4 py-8 mt-10 min-h-[85vh] flex flex-col justify-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-2 text-center md:text-left">
         Projects
       </h1>

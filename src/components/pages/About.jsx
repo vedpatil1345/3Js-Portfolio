@@ -57,7 +57,7 @@ const About = () => {
   };
 
   return (
-    <div className="w-[90vw] mx-auto px-4 py-8 mt-10">
+    <div className="w-[90vw] mx-auto px-4 py-8 mt-10 min-h-screen flex flex-col justify-center">
       <h1 className="text-5xl font-extrabold text-black dark:text-white mb-8 text-center md:text-left">About</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
