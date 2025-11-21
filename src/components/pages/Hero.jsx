@@ -264,7 +264,7 @@ function Hero() {
   };
 
   return (
-    <section className="h-screen max-w-screen flex flex-col relative" ref={sectionRef}>
+    <section className="h-[95vh] max-w-screen flex flex-col relative" ref={sectionRef}>
       {/* Tooltips Layer */}
       {!ismobile && (
         <>

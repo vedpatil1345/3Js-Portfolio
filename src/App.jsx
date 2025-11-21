@@ -30,7 +30,7 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
         <NavBar />
-        <main className="flex-1">
+        <main className="flex-1 mt-5">
           <PageTransition 
             transitionStage={transitionStage} 
             onAnimationEnd={handleAnimationEnd}

@@ -236,7 +236,7 @@ const Projects = () => {
 
   return (
     <div className="w-[95vw] mx-auto px-4 py-8 mt-10">
-      <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-6 text-center md:text-left">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-2 text-center md:text-left">
         Projects
       </h1>
 
