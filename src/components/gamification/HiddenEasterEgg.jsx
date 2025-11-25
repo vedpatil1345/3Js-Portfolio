@@ -16,7 +16,7 @@ const HiddenEasterEgg = ({ characterId, pageName }) => {
     if (isDiscovered) return;
 
     // Random appearance interval between 10-30 seconds
-    const showInterval = Math.random() * 10000 + 5000;
+    const showInterval = Math.random() * 10000 + 10000;
     
     const showTimer = setTimeout(() => {
       // Randomly choose left or right side only
