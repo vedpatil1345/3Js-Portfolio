@@ -1,5 +1,8 @@
 import { Check, Copy, Github, Linkedin, Twitter } from "lucide-react";
 import React, { useState, lazy, Suspense } from "react";
+import { useGamification } from "../gamification/GamificationContext";
+import { useSecretCode } from "../gamification/useGameTriggers";
+import HiddenEasterEgg from "../gamification/HiddenEasterEgg";
 
 // Lazy load heavy components
 const Clock = lazy(() => import("../elements/Clock"));
@@ -7,7 +10,25 @@ const Skills = lazy(() => import("../elements/Skills"));
 import emailjs from "@emailjs/browser";
 
 const About = () => {
+  const { discoverEasterEgg, openEasterEgg } = useGamification();
   const [isCopied, setIsCopied] = useState(false);
+  
+  // Secret code for Thor
+  useSecretCode('thor', () => {
+    const isNew = discoverEasterEgg('thor');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Thor Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('thor');
+  });
+
   const handleCopy = () => {
     navigator.clipboard.writeText("vedpatil13042005@gmail.com");
     setIsCopied(true);
@@ -57,7 +78,8 @@ const About = () => {
   };
 
   return (
-    <div className="w-[90vw] mx-auto px-4 py-8 mt-10 min-h-screen flex flex-col justify-center">
+    <div className="w-[90vw] mx-auto  px-4 py-8 mt-15 min-h-screen flex flex-col justify-center">
+      <HiddenEasterEgg characterId="thor" pageName="about" />
       <h1 className="text-5xl font-extrabold text-black dark:text-white mb-8 text-center md:text-left">About</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 

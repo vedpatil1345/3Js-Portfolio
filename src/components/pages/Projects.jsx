@@ -6,6 +6,9 @@ import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import ProjectTV from "../elements/ProjectTV.jsx";
 import { useTheme } from "../theme-provider.jsx";
+import { useGamification } from "../gamification/GamificationContext";
+import { useSecretCode } from "../gamification/useGameTriggers";
+import HiddenEasterEgg from "../gamification/HiddenEasterEgg";
 
 // Memoized ProjectNavDots component
 const ProjectNavDots = React.memo(({ projects, currentIndex, onSelectProject }) => {
@@ -198,7 +201,40 @@ const ProjectPreview = React.memo(({ project }) => {
 });
 
 const Projects = () => {
+  const { discoverEasterEgg, openEasterEgg } = useGamification();
   const [projectIndex, setProjectIndex] = useState(0);
+  
+  // Secret code for Captain America
+  useSecretCode('captain', () => {
+    const isNew = discoverEasterEgg('captainamerica');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Captain America Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('captainamerica');
+  });
+
+  // Secret code for Hulk
+  useSecretCode('hulk', () => {
+    const isNew = discoverEasterEgg('hulk');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Hulk Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('hulk');
+  });
   
   // Function to calculate relative index and distance for card stacking
   const getRelativeIndex = (index, currentIndex, totalLength) => {
@@ -235,7 +271,7 @@ const Projects = () => {
   const visibleCards = 2;
 
   return (
-    <div className="w-[95vw] mx-auto px-4 py-8 mt-10 min-h-[85vh] flex flex-col justify-center">
+    <div className="w-[95vw] mx-auto px-4 py-8 mt-15 min-h-[85vh] flex flex-col justify-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-2 text-center md:text-left">
         Projects
       </h1>
@@ -324,6 +360,10 @@ const Projects = () => {
           <ProjectPreview project={currentProject} />
         </div>
       </div>
+      
+      {/* Hidden Easter Eggs */}
+      <HiddenEasterEgg characterId="captainamerica" pageName="projects" />
+      <HiddenEasterEgg characterId="hulk" pageName="projects" />
     </div>
   );
 };

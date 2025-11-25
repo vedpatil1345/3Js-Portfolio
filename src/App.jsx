@@ -5,8 +5,11 @@ import NavBar from "./components/NavBar";
 import BottomNav from "./components/BottomNav";
 import PageTransition from "./components/PageTransition";
 import Tutorial from "./components/Tutorial";
+import EasterEggNotification from "./components/EasterEggNotification";
 import { usePageTransition } from "./components/usePageTransition";
 import { useSwipeNavigation } from "./components/useSwipeNavigation";
+import { GamificationProvider } from "./components/gamification/GamificationContext";
+import GameManager from "./components/gamification/GameManager";
 import Hero from "./components/pages/Hero";
 import About from "./components/pages/About";
 import Projects from "./components/pages/Projects";
@@ -33,27 +36,31 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
-        <Tutorial />
-        <NavBar isLoading={isLoading} />
-        <main className="flex-1 mt-5">
-          <PageTransition 
-            transitionStage={transitionStage} 
-            onAnimationEnd={handleAnimationEnd}
-            isLoading={isLoading}
-          >
-            <Routes location={displayLocation}>
-              <Route path="/" element={<Hero />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/experience" element={<Experience />} />
-            </Routes>
-          </PageTransition>
-        </main>
-        <BottomNav isLoading={isLoading} />
-      </div>
+      <GamificationProvider>
+        <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
+          <Tutorial />
+          <EasterEggNotification />
+          <GameManager />
+          <NavBar isLoading={isLoading} />
+          <main className="flex-1 ">
+            <PageTransition 
+              transitionStage={transitionStage} 
+              onAnimationEnd={handleAnimationEnd}
+              isLoading={isLoading}
+            >
+              <Routes location={displayLocation}>
+                <Route path="/" element={<Hero />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/experience" element={<Experience />} />
+              </Routes>
+            </PageTransition>
+          </main>
+          <BottomNav isLoading={isLoading} />
+        </div>
+      </GamificationProvider>
     </ThemeProvider>
-  )
+  );
 }
 
 export default App

@@ -22,6 +22,9 @@ import Drone from "../elements/Drone";
 import { calculateSizes } from "../data";
 import { Route, useNavigate } from "react-router-dom";
 import Skills from "../elements/Skills";
+import { useGamification } from "../gamification/GamificationContext";
+import { useSecretCode } from "../gamification/useGameTriggers";
+import HiddenEasterEgg from "../gamification/HiddenEasterEgg";
 
 // Memoize scene elements to prevent unnecessary re-renders
 const MemoizedRoom = memo(MyRoom);
@@ -148,16 +151,34 @@ const Button = memo(({ name, isBeam = false, containerClass }) => {
 
 function Hero() {
   const { theme } = useTheme();
+  const { discoverGame, discoverEasterEgg, openGame, openEasterEgg } = useGamification();
   const ismobile = useMediaQuery({ query: "(max-width: 640px)" });
   const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
   const [isVisible, setIsVisible] = useState(true);
   const sectionRef = useRef(null);
   const GPUTier = useDetectGPU();
+  const [lastTap, setLastTap] = useState({ target: null, time: 0 });
   
   // Tooltip states
   const [hoveredModel, setHoveredModel] = useState(null);
   const [tooltipPositions, setTooltipPositions] = useState({});
   const canvasRef = useRef(null);
+
+  // Secret code for Iron Man Easter egg
+  useSecretCode('ironman', () => {
+    const isNew = discoverEasterEgg('ironman');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Iron Man Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('ironman');
+  });
 
   // Use Intersection Observer to detect when section is visible
   useEffect(() => {
@@ -263,8 +284,23 @@ function Hero() {
     drone: { label: "Innovation & Tech", description: "Future of Development" }
   };
 
+  // Mobile double-tap handler
+  const handleMobileTap = useCallback((e, action) => {
+    const now = Date.now();
+    const target = e.object?.uuid || e.target;
+    
+    // Check if this is a double-tap (within 300ms on same object)
+    if (lastTap.target === target && now - lastTap.time < 300) {
+      e.stopPropagation();
+      action();
+      setLastTap({ target: null, time: 0 });
+    } else {
+      setLastTap({ target, time: now });
+    }
+  }, [lastTap]);
+
   return (
-    <section className="h-[95vh] max-w-screen flex flex-col relative" ref={sectionRef}>
+    <section className="h-screen max-w-screen flex flex-col relative" ref={sectionRef}>
       {/* Tooltips Layer */}
       {!ismobile && (
         <>
@@ -350,17 +386,48 @@ function Hero() {
                   <group 
                     position={sizes.carPosition}
                     onPointerOver={(e) => {
-                      e.stopPropagation();
-                      setHoveredModel('car');
-                      if (canvasRef.current) {
-                        const rect = canvasRef.current.getBoundingClientRect();
-                        setTooltipPositions(prev => ({
-                          ...prev,
-                          car: { x: rect.width * 0.7, y: rect.height * 0.7 }
-                        }));
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        setHoveredModel('car');
+                        if (canvasRef.current) {
+                          const rect = canvasRef.current.getBoundingClientRect();
+                          setTooltipPositions(prev => ({
+                            ...prev,
+                            car: { x: rect.width * 0.7, y: rect.height * 0.7 }
+                          }));
+                        }
                       }
                     }}
-                    onPointerOut={() => setHoveredModel(null)}
+                    onPointerOut={() => !ismobile && setHoveredModel(null)}
+                    onClick={(e) => {
+                      if (ismobile) {
+                        handleMobileTap(e, () => {
+                          const isNew = discoverGame('snake');
+                          if (isNew) {
+                            const notification = document.createElement('div');
+                            notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                            notification.textContent = '🐍 Snake Game Discovered!';
+                            document.body.appendChild(notification);
+                            setTimeout(() => notification.remove(), 3000);
+                          }
+                          openGame('snake');
+                        });
+                      }
+                    }}
+                    onDoubleClick={(e) => {
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        const isNew = discoverGame('snake');
+                        if (isNew) {
+                          const notification = document.createElement('div');
+                          notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                          notification.textContent = '🐍 Snake Game Discovered!';
+                          document.body.appendChild(notification);
+                          setTimeout(() => notification.remove(), 3000);
+                        }
+                        openGame('snake');
+                      }
+                    }}
                   >
                     <MemoizedCar
                       ref={carRef}
@@ -376,17 +443,48 @@ function Hero() {
                 <Suspense fallback={null}>
                   <group
                     onPointerOver={(e) => {
-                      e.stopPropagation();
-                      setHoveredModel('react');
-                      if (canvasRef.current) {
-                        const rect = canvasRef.current.getBoundingClientRect();
-                        setTooltipPositions(prev => ({
-                          ...prev,
-                          react: { x: rect.width * 0.75, y: rect.height * 0.3 }
-                        }));
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        setHoveredModel('react');
+                        if (canvasRef.current) {
+                          const rect = canvasRef.current.getBoundingClientRect();
+                          setTooltipPositions(prev => ({
+                            ...prev,
+                            react: { x: rect.width * 0.75, y: rect.height * 0.3 }
+                          }));
+                        }
                       }
                     }}
-                    onPointerOut={() => setHoveredModel(null)}
+                    onPointerOut={() => !ismobile && setHoveredModel(null)}
+                    onClick={(e) => {
+                      if (ismobile) {
+                        handleMobileTap(e, () => {
+                          const isNew = discoverGame('memory');
+                          if (isNew) {
+                            const notification = document.createElement('div');
+                            notification.className = 'fixed top-20 right-4 bg-purple-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                            notification.textContent = '🧠 Memory Match Discovered!';
+                            document.body.appendChild(notification);
+                            setTimeout(() => notification.remove(), 3000);
+                          }
+                          openGame('memory');
+                        });
+                      }
+                    }}
+                    onDoubleClick={(e) => {
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        const isNew = discoverGame('memory');
+                        if (isNew) {
+                          const notification = document.createElement('div');
+                          notification.className = 'fixed top-20 right-4 bg-purple-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                          notification.textContent = '🧠 Memory Match Discovered!';
+                          document.body.appendChild(notification);
+                          setTimeout(() => notification.remove(), 3000);
+                        }
+                        openGame('memory');
+                      }
+                    }}
                   >
                     <MemoizedReactModel
                       ref={reactModelRef}
@@ -401,17 +499,48 @@ function Hero() {
                 <Suspense fallback={null}>
                   <group
                     onPointerOver={(e) => {
-                      e.stopPropagation();
-                      setHoveredModel('earth');
-                      if (canvasRef.current) {
-                        const rect = canvasRef.current.getBoundingClientRect();
-                        setTooltipPositions(prev => ({
-                          ...prev,
-                          earth: { x: rect.width * 0.25, y: rect.height * 0.3 }
-                        }));
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        setHoveredModel('earth');
+                        if (canvasRef.current) {
+                          const rect = canvasRef.current.getBoundingClientRect();
+                          setTooltipPositions(prev => ({
+                            ...prev,
+                            earth: { x: rect.width * 0.25, y: rect.height * 0.3 }
+                          }));
+                        }
                       }
                     }}
-                    onPointerOut={() => setHoveredModel(null)}
+                    onPointerOut={() => !ismobile && setHoveredModel(null)}
+                    onClick={(e) => {
+                      if (ismobile) {
+                        handleMobileTap(e, () => {
+                          const isNew = discoverGame('flappy');
+                          if (isNew) {
+                            const notification = document.createElement('div');
+                            notification.className = 'fixed top-20 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                            notification.textContent = '🐦 Flappy Bird Discovered!';
+                            document.body.appendChild(notification);
+                            setTimeout(() => notification.remove(), 3000);
+                          }
+                          openGame('flappy');
+                        });
+                      }
+                    }}
+                    onDoubleClick={(e) => {
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        const isNew = discoverGame('flappy');
+                        if (isNew) {
+                          const notification = document.createElement('div');
+                          notification.className = 'fixed top-20 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                          notification.textContent = '🐦 Flappy Bird Discovered!';
+                          document.body.appendChild(notification);
+                          setTimeout(() => notification.remove(), 3000);
+                        }
+                        openGame('flappy');
+                      }
+                    }}
                   >
                     <MemoizedHeroEarth
                       ref={earthRef}
@@ -426,17 +555,48 @@ function Hero() {
                   <group 
                     ref={droneRef}
                     onPointerOver={(e) => {
-                      e.stopPropagation();
-                      setHoveredModel('drone');
-                      if (canvasRef.current) {
-                        const rect = canvasRef.current.getBoundingClientRect();
-                        setTooltipPositions(prev => ({
-                          ...prev,
-                          drone: { x: rect.width * 0.3, y: rect.height * 0.7 }
-                        }));
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        setHoveredModel('drone');
+                        if (canvasRef.current) {
+                          const rect = canvasRef.current.getBoundingClientRect();
+                          setTooltipPositions(prev => ({
+                            ...prev,
+                            drone: { x: rect.width * 0.3, y: rect.height * 0.7 }
+                          }));
+                        }
                       }
                     }}
-                    onPointerOut={() => setHoveredModel(null)}
+                    onPointerOut={() => !ismobile && setHoveredModel(null)}
+                    onClick={(e) => {
+                      if (ismobile) {
+                        handleMobileTap(e, () => {
+                          const isNew = discoverGame('tictactoe');
+                          if (isNew) {
+                            const notification = document.createElement('div');
+                            notification.className = 'fixed top-20 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                            notification.textContent = '⭕ Tic-Tac-Toe Discovered!';
+                            document.body.appendChild(notification);
+                            setTimeout(() => notification.remove(), 3000);
+                          }
+                          openGame('tictactoe');
+                        });
+                      }
+                    }}
+                    onDoubleClick={(e) => {
+                      if (!ismobile) {
+                        e.stopPropagation();
+                        const isNew = discoverGame('tictactoe');
+                        if (isNew) {
+                          const notification = document.createElement('div');
+                          notification.className = 'fixed top-20 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-bounce';
+                          notification.textContent = '⭕ Tic-Tac-Toe Discovered!';
+                          document.body.appendChild(notification);
+                          setTimeout(() => notification.remove(), 3000);
+                        }
+                        openGame('tictactoe');
+                      }
+                    }}
                   >
                     <MemoizedDrone
                       position={sizes.dronePosition}

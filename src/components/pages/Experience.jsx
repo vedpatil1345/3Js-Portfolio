@@ -4,6 +4,9 @@ import { OrbitControls } from '@react-three/drei';
 import CanvasLoader from '../elements/Loader';
 import { workExperiences } from '../data';
 import { Ved } from '../elements/Ved';
+import { useGamification } from '../gamification/GamificationContext';
+import { useSecretCode } from '../gamification/useGameTriggers';
+import HiddenEasterEgg from '../gamification/HiddenEasterEgg';
 
 // === Memoized Dots Component ===
 const ExperienceNavDots = React.memo(({ experiences, currentIndex, onSelectExperience }) => (
@@ -101,8 +104,57 @@ const ExperienceCard = React.memo(
 );
 
 const Experience = () => {
+  const { discoverEasterEgg, openEasterEgg } = useGamification();
   const [experienceIndex, setExperienceIndex] = useState(0);
   const [animationName, setAnimationName] = useState('idle');
+
+  // Secret code for Black Widow
+  useSecretCode('blackwidow', () => {
+    const isNew = discoverEasterEgg('blackwidow');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Black Widow Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('blackwidow');
+  });
+
+  // Secret code for Doctor Strange
+  useSecretCode('strange', () => {
+    const isNew = discoverEasterEgg('doctorstrange');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-purple-500 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Doctor Strange Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('doctorstrange');
+  });
+
+  // Secret code for Black Panther
+  useSecretCode('wakanda', () => {
+    const isNew = discoverEasterEgg('blackpanther');
+    if (isNew) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-purple-600 text-white px-6 py-3 rounded-lg shadow-lg z-[400] animate-in slide-in-from-right duration-300';
+      notification.textContent = 'Black Panther Easter Egg Discovered!';
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.classList.add('animate-out', 'fade-out');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    openEasterEgg('blackpanther');
+  });
 
   const visibleCards = 2;
   const totalExperiences = workExperiences.length;
@@ -131,7 +183,7 @@ const Experience = () => {
   }, [experienceIndex, totalExperiences]);
 
   return (
-    <div className="w-[90vw] mx-auto px-4 pt-8 mt-10 min-h-[85vh] flex flex-col justify-center">
+    <div className="w-[90vw] mx-auto px-4 pt-8 mt-15 min-h-[85vh] flex flex-col justify-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-6 text-center md:text-left">
         My Work Experience
       </h1>
@@ -202,6 +254,11 @@ const Experience = () => {
           </div>
         </div>
       </div>
+      
+      {/* Hidden Easter Eggs */}
+      <HiddenEasterEgg characterId="blackwidow" pageName="experience" />
+      <HiddenEasterEgg characterId="doctorstrange" pageName="experience" />
+      <HiddenEasterEgg characterId="blackpanther" pageName="experience" />
     </div>
   );
 };

@@ -149,6 +149,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 
   .gradient-heading {
     @apply font-extrabold font-mono text-center lg:text-6xl md:text-5xl text-3xl;
