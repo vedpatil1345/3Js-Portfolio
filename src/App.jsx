@@ -4,7 +4,9 @@ import { ThemeProvider } from "./components/theme-provider";
 import NavBar from "./components/NavBar";
 import BottomNav from "./components/BottomNav";
 import PageTransition from "./components/PageTransition";
+import Tutorial from "./components/Tutorial";
 import { usePageTransition } from "./components/usePageTransition";
+import { useSwipeNavigation } from "./components/useSwipeNavigation";
 import Hero from "./components/pages/Hero";
 import About from "./components/pages/About";
 import Projects from "./components/pages/Projects";
@@ -13,6 +15,9 @@ import Experience from "./components/pages/Experience";
 function App() {
   const [displayLocation, transitionStage, handleAnimationEnd, isLoading, handlePageLoaded] = usePageTransition();
   const location = useLocation();
+  
+  // Enable swipe and arrow key navigation
+  useSwipeNavigation();
 
   // Simulate page load completion
   useEffect(() => {
@@ -29,6 +34,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="font-sans dark:bg-black bg-slate-50 min-h-screen flex flex-col pb-16 lg:pb-0">
+        <Tutorial />
         <NavBar isLoading={isLoading} />
         <main className="flex-1 mt-5">
           <PageTransition 
