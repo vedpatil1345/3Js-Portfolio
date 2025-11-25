@@ -131,7 +131,7 @@ const Experience = () => {
   }, [experienceIndex, totalExperiences]);
 
   return (
-    <div className="w-[90vw] mx-auto px-4 pt-8 mt-10">
+    <div className="w-[90vw] mx-auto px-4 pt-8 mt-10 min-h-[85vh] flex flex-col justify-center">
       <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-6 text-center md:text-left">
         My Work Experience
       </h1>
